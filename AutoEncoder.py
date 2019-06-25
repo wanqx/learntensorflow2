@@ -16,15 +16,15 @@ import numpy as np
 num_features = 784 # data features (img shape: 28*28).
 
 # Training parameters.
-learning_rate = 0.01
-training_steps = 5000
+learning_rate = 0.005
+training_steps = 12000
 batch_size = 256
 display_step = 1000
 
 # Network Parameters
-num_hidden_1 = 128 # 1st layer num features.
-num_hidden_2 = 64 # 2nd layer num features (the latent dim).
-num_hidden_3 = 2
+num_hidden_1 = 392 # 1st layer num features.
+num_hidden_2 = 128 # 2nd layer num features (the latent dim).
+num_hidden_3 = 3
 
 # Prepare MNIST data.
 from tensorflow.keras.datasets import mnist
@@ -143,14 +143,14 @@ n = 4
 canvas_orig = np.empty((28 * n, 28 * n))
 canvas_recon = np.empty((28 * n, 28 * n))
 encodeData= None
-encodeDataLabels = []
+labels = []
 for i, (batch_x, _) in enumerate(test_data.take(n)):
     # Encode and decode the digit image.
     reconstructed_images = decoder(encoder(batch_x))
     encodeData = encoder(batch_x).numpy() if encodeData is None else \
     np.append(encodeData, encoder(batch_x).numpy(), axis=0)
     for label in _:
-        encodeDataLabels.append(label.numpy())
+        labels.append(label.numpy())
     # Display original images.
     for j in range(n):
         # Draw the generated digits.
@@ -170,4 +170,23 @@ plt.show()
 print("Reconstructed Images")
 plt.figure(figsize=(n, n))
 plt.imshow(canvas_recon, origin="upper", cmap="gray")
+plt.show()
+
+
+from mpl_toolkits.mplot3d import Axes3D
+fig = plt.figure()
+
+ax = fig.add_subplot(111, projection='3d')
+
+for number in range(10):
+    tempx, tempy, tempz = [], [], []
+    for i, item in enumerate(labels):
+        if item == number:
+            x, y, z = encodeData[i]
+            tempx.append(x)
+            tempy.append(y)
+            tempz.append(z)
+    ax.scatter(tempx, tempy, tempz)
+            
+
 plt.show()
