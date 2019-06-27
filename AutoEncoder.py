@@ -11,6 +11,7 @@ from __future__ import absolute_import, division, print_function
 
 import tensorflow as tf
 import numpy as np
+from timer import timer
 
 # MNIST Dataset parameters.
 num_features = 784 # data features (img shape: 28*28).
@@ -125,15 +126,17 @@ def run_optimization(x):
 
 
 # Run training for the given number of steps.
-for step, (batch_x, _) in enumerate(train_data.take(training_steps + 1)):
-    
-    # Run the optimization.
-    loss = run_optimization(batch_x)
-    
-    if step % display_step == 0:
-        print("step: %i, loss: %f" % (step, loss))
+@timer
+def run():
+    for step, (batch_x, _) in enumerate(train_data.take(training_steps + 1)):
+            
+        # Run the optimization.
+        loss = run_optimization(batch_x)
         
-        
+        if step % display_step == 0:
+            print("step: %i, loss: %f" % (step, loss))        
+run()
+
 # Testing and Visualization.
 import matplotlib.pyplot as plt
 
